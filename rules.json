@@ -1,0 +1,30 @@
+{
+  "rules": [
+    {
+      "keyword": "새벽",
+      "target_playlist_id": "PLeHyrsUzRnLQfSMu4ZK5Llq_2bluret5l",
+      "description": "새벽예배 관련 영상"
+    },
+    {
+      "keyword": "주일",
+      "target_playlist_id": "PLeHyrsUzRnLS2L1CchWEgOCJLCc-g4JUG",
+      "description": "주일예배(1부, 2부, 찬양예배) 관련 영상"
+    },
+    {
+      "keyword": "수요",
+      "target_playlist_id": "PLeHyrsUzRnLSi3DDT2Pu8HIiu68sn8kI8",
+      "description": "수요예배 관련 영상"
+    },
+    {
+      "keyword": "금요",
+      "target_playlist_id": "PLeHyrsUzRnLRRKsyt6C4Ub97gxuSErCGL",
+      "description": "금요철야예배 관련 영상"
+    },
+    {
+      "keyword": "청년",
+      "target_playlist_id": "PLeHyrsUzRnLQ5gaR5f_by0bhTrux-emuf",
+      "description": "청년부 예배 관련 영상"
+    }
+  ],
+  "default_playlist_id": null
+}
