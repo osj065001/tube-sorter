@@ -3,3 +3,11 @@ __pycache__/
 .env
 .DS_Store
 *.pyc
+
+# Data files
+*.csv
+
+# Output directories
+categorized_videos/
+categorized_by_playlist/
+keyword_categorized/
