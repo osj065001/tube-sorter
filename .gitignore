@@ -9,3 +9,7 @@ csv_backups/
 
 # Keep root clean from data files
 *.csv
+token.json
+client_secrets.json
+state.json
+venv/
