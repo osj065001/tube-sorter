@@ -7,6 +7,10 @@ on:
         description: 'Number of videos to process (optional, overrides .env)'
         required: false
         default: ''
+      reset_state:
+        description: 'Reset state and start from the beginning? (true/false)'
+        required: false
+        default: 'false'
 
 jobs:
   run-sorter:
@@ -22,11 +26,16 @@ jobs:
 
       - name: Fetch persistent state (Read)
         run: |
-          # 원격의 state-tracking 브랜치에서 최신 state.json만 가져옴
-          git fetch origin state-tracking || true
-          git checkout origin/state-tracking -- state.json || echo '{"last_published_at": "1970-01-01T00:00:00Z"}' > state.json
-          echo "Current state loaded:"
-          cat state.json
+          if [ "${{ github.event.inputs.reset_state }}" = "true" ]; then
+            echo '{"last_published_at": "1970-01-01T00:00:00Z"}' > state.json
+            echo "State reset requested. Starting from the beginning."
+          else
+            # 원격의 state-tracking 브랜치에서 최신 state.json만 가져옴
+            git fetch origin state-tracking || true
+            git checkout origin/state-tracking -- state.json || echo '{"last_published_at": "1970-01-01T00:00:00Z"}' > state.json
+            echo "Current state loaded:"
+            cat state.json
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -64,21 +73,25 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          # state.json을 안전하게 복사해둡니다.
-          cp state.json state.json.tmp
-          
-          # 임시 브랜치를 만들어 히스토리를 끊습니다.
-          git checkout --orphan temp-state
-          
-          # 인덱스와 작업 디렉토리의 모든 파일을 비웁니다.
-          git rm -rf .
-          
-          # 복사해둔 파일을 다시 가져옵니다.
-          mv state.json.tmp state.json
-          
-          # state.json만 추가하고 커밋합니다.
-          git add state.json
-          git commit -m "chore: update state.json [skip ci]"
-          
-          # state-tracking 브랜치로 강제 푸시하여 최신 상태 유지
-          git push origin temp-state:state-tracking --force
+          # state.json이 있을 때만 안전하게 보관 및 업데이트를 진행합니다.
+          if [ -f state.json ]; then
+            cp state.json state.json.tmp
+            
+            # 임시 브랜치를 만들어 히스토리를 끊습니다.
+            git checkout --orphan temp-state
+            
+            # 인덱스와 작업 디렉토리의 모든 파일을 비웁니다.
+            git rm -rf .
+            
+            # 복사해둔 파일을 다시 가져옵니다.
+            mv state.json.tmp state.json
+            
+            # state.json만 추가하고 커밋합니다.
+            git add state.json
+            git commit -m "chore: update state.json [skip ci]"
+            
+            # state-tracking 브랜치로 강제 푸시하여 최신 상태 유지
+            git push origin temp-state:state-tracking --force
+          else
+            echo "No state.json found to persist. Skipping state update."
+          fi
