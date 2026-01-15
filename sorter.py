@@ -15,7 +15,7 @@ RULES_FILE = 'rules.json'
 STATE_FILE = 'state.json'
 
 def main():
-    load_dotenv()
+    load_dotenv(override=True)
     
     try:
         # 1. 초기화 (의존성 주입 형태의 구성)
